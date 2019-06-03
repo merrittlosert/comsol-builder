@@ -23,7 +23,7 @@ public class qubit_array {
       String layerHeights[] = {"170.","9.","40.","60."};
       builder.addHeterostructure(layerLabels,layerHeights);
       // Add STL files to builder
-      String stlFolder = "/Users/adamfrees/Documents/comsol-builder/my_devices/stl_files";//TODO: make this a relative path?
+      String stlFolder = "/frees/Documents/comsol-builder/my_devices/stl_files";//TODO: make this a relative path?
       builder.addElectrodesSTL(stlFolder,224.);//TODO: change 224 to variable
       // Finish building geometry
       builder.model.geom("geom1").run("fin");
