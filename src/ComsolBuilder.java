@@ -182,7 +182,10 @@ public class ComsolBuilder {
           //Change settings of mesh so that we get a reasonable mesh
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "auto");
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("stltoltype", "auto");
-          model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "detectfaces");
+
+          // I had to comment out this line to prevent two close objects from getting lumped into the same object
+          //model.mesh("mpart"+importCount).feature("imp"+importCount).set("facepartition", "detectfaces"); 
+
           model.mesh("mpart"+importCount).feature("imp"+importCount).set("facemaxangle", "0.0");
           //Re-import file
           model.component("comp1").geom("geom1").run("imp"+importCount);

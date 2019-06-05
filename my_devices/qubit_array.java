@@ -20,10 +20,10 @@ public class qubit_array {
       ComsolBuilder builder = new ComsolBuilder(xDims,yDims);
       // Define heterostructure layer names and heights, add them to the builder
       String layerLabels[] = {"SiGeBuffer","SiWell","SiGeSpacer","Oxide"};
-      String layerHeights[] = {"170.","9.","40.","60."};
+      String layerHeights[] = {"170.","9.","40.","240."};
       builder.addHeterostructure(layerLabels,layerHeights);
       // Add STL files to builder
-      String stlFolder = "c:/Users/frees/Documents/comsol-builder/my_devices/stl_files";//TODO: make this a relative path?
+      String stlFolder = "/Users/MPRL/Developer/comsol-builder/my_devices/stl_files";//TODO: make this a relative path?
       builder.addElectrodesSTL(stlFolder,224.);//TODO: change 224 to variable
       // Finish building geometry
       builder.model.geom("geom1").run("fin");

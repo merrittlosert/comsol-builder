@@ -4,9 +4,9 @@ javaFile=$1
 comsolPath="/Applications/COMSOL54/Multiphysics"
 
 echo "Compiling comsolbuiler package..."
-javac -d . -cp "$comsolPath/plugins/*" -source 8 -target 8 src/*
+javac -d . -cp "$comsolPath/plugins/*" -source 7 -target 7 src/*
 echo "Compiling "$javaFile" into "${javaFile::${#javaFile}-5}".class..."
-javac -cp "$comsolPath/plugins/*":"." -source 8 -target 8 $javaFile
+javac -cp "$comsolPath/plugins/*":"." -source 7 -target 7 $javaFile
 echo "Building comsolbuiler.jar..."
 jar -cvf comsolbuilder.jar comsolbuilder/*
 echo "Starting COMSOL..."
