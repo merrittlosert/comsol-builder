@@ -65,9 +65,26 @@ public class ComsolBuilder {
         model.geom("geom1").feature(layerLabels[i]).set("selresult", true);
         model.geom("geom1").feature(layerLabels[i]).set("contributeto", "SiGeSel");
       }
+
+      // if inside the SiWell, add a workplane which we'll use to compute 2d quantities
+      if (layerLabels[i].equals("SiWell")) {
+        model.geom("geom1").feature().create("wp1","WorkPlane");
+
+        //TODO: make this geometry dependent
+        model.geom("geom1").feature("wp1").set("quickz", 174.5);
+
+        // partition the SiWell in two
+        model.geom("geom1").feature().create("par1", "Partition");
+        model.geom("geom1").feature("par1").set("partitionwith", "workplane");
+        String siWellArray[] = {"SiWell"};
+        model.geom("geom1").feature("par1").selection("input").set(siWellArray);
+      }
+     
       currentHeight += Double.parseDouble(layerHeights[i]);
     }
   }
+
+
 
   /**
   * Imports and extrudes DXF File
@@ -241,7 +258,7 @@ public class ComsolBuilder {
   */
 
   public void selectVoltages(String totalDomain){
-    int blkDomainSelectionEntities[] = model.selection(totalDomain).entities(3);
+    int blkDomainSelectionEntities[] = model.selection(totalDomain).entities(3); 
 
     for (int selNumber = 0; selNumber<blkDomainSelectionEntities.length; selNumber++) {
       model.component("comp1").selection().create("sel"+(selNumber+1), "Explicit");
@@ -252,4 +269,39 @@ public class ComsolBuilder {
 
     }
   }
+
+  /**
+  * Adds an electrostatic element for the surface splitting the Si well
+  */
+
+  public void addSurfaceChargeDensity() {
+    model.component("comp1").selection().create("surf_sel", "Explicit");
+    model.component("comp1").selection("surf_sel").geom("geom1", 2);
+    model.component("comp1").selection("surf_sel").set(9); //TODO: there's gotta be a different way than just setting this face...
+
+    model.component("comp1").physics("es").create("surface_density", "SurfaceChargeDensity");
+    model.component("comp1").physics("es").feature("surface_density").selection().named("surf_sel");
+  }
+
+  /**
+  * Adds parameters to the model.
+  * @param paramName Name of the parameter
+  * @param expression Parameter expression
+  */
+
+  public void addParameter(String paramName, String expression) {
+    model.param().set(paramName, expression);
+  }
+
+  /**
+  * Adds an ellipse on the well surface to be used as the expected location of a quantum dot
+  */
+
+  public void addEllipseInSiWell(String name, String semiA, String semiB, String x, String y) {
+    model.geom("geom1").feature("wp1").geom().feature().create(name, "Ellipse");
+    model.geom("geom1").feature("wp1").geom().feature(name).set("semiaxes", new String[]{semiA, semiB});
+    model.geom("geom1").feature("wp1").geom().feature(name).set("pos", new String[]{x, y});
+  }
+
+
 }

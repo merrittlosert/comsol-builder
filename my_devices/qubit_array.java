@@ -1,6 +1,7 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
 import comsolbuilder.*;
+import java.util.*;
 
 public class qubit_array {
 
@@ -36,6 +37,53 @@ public class qubit_array {
       builder.model.physics().create("es", "Electrostatics", "geom1");
       //Each domain in domain group is a different electrode
       builder.selectVoltages("geom1_ElectrodeSel_dom");
+
+      // Adds an electrostatic element for the surface charge in the SiWell
+      builder.addSurfaceChargeDensity();
+
+      Dictionary params = new Hashtable();
+
+      // Electrode voltages
+      params.put("screening", "0[V]");
+      params.put("qubit_control", ".02[V]");
+      params.put("readout_tunnel", "0[V]");
+      params.put("qubit_plunger", ".02[V]");
+      params.put("tunnel_barrier", "-.004[V]");
+      params.put("readout_plunger", ".02[V]");
+
+      // Constants
+      params.put("valley_degeneracy","2");
+      params.put("effective_mass", "0.19");
+
+      // Dot location and size params
+      params.put("dot_1a_a_semiaxis", "40[nm]");
+      params.put("dot_1a_b_semiaxis", "55[nm]");
+      params.put("dot_1a_x_center", "-220[nm]");
+      params.put("dot_1a_y_center", "80[nm]");
+      params.put("dot_1b_y_center", "-40[nm]");
+      params.put("dot_1b_y_center", "-40[nm]");
+      params.put("dot_2a_x_center", "115[nm]");
+      params.put("dot_5a_y_center", "120[nm]");
+
+      for (Enumeration i = params.keys(); i.hasMoreElements();) 
+      { 
+         String key = i.nextElement().toString();
+         builder.addParameter(key, params.get(key).toString());
+      } 
+
+      builder.addEllipseInSiWell("el1", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "dot_1a_x_center", "dot_1a_y_center");
+      builder.addEllipseInSiWell("el2", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "dot_1a_x_center", "dot_1b_y_center");
+      builder.addEllipseInSiWell("el3", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "dot_2a_x_center", "dot_1a_y_center");
+      builder.addEllipseInSiWell("el4", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "dot_2a_x_center", "dot_1b_y_center");
+      builder.addEllipseInSiWell("el5", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "-dot_2a_x_center", "dot_1a_y_center");
+      builder.addEllipseInSiWell("el6", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "-dot_2a_x_center", "dot_1b_y_center");
+      builder.addEllipseInSiWell("el7", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "-dot_1a_x_center", "dot_1a_y_center");
+      builder.addEllipseInSiWell("el8", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "-dot_1a_x_center", "dot_1b_y_center");
+      builder.addEllipseInSiWell("el9", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "0", "dot_5a_y_center");
+      builder.addEllipseInSiWell("el10", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "0", "0");
+      builder.addEllipseInSiWell("el11", "dot_1a_a_semiaxis", "dot_1a_b_semiaxis", "0", "-dot_5a_y_center");
+
+
 
       return builder.model;
    }
